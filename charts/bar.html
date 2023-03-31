@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="main.css">
+	<link rel="stylesheet" href="main2.css">
+</head>
+
+<body>
+	<script>
+		document.body.addEventListener('keypress', function (e) {
+			if (e.key.toUpperCase() === "S") {
+				outAnimation();
+				// stop();
+
+			}
+		});
+		if (screen.colorDepth === 0) {
+			var css = '[id^=ccg] {display: none; }',
+				head = document.head || document.getElementsByTagName('head')[0],
+				style = document.createElement('style');
+			head.appendChild(style);
+			style.type = 'text/css';
+			if (style.styleSheet) {
+				// This is required for IE8 and below.
+				style.styleSheet.cssText = css;
+			} else {
+				style.appendChild(document.createTextNode(css));
+			}
+		}
+
+		const elementToObserve = document.body;
+		const observer = new MutationObserver(() => {
+			document.body.style.margin = '0';
+			document.body.style.padding = '0';
+			document.body.style.overflow = 'hidden';
+			var aa = document.getElementsByTagName('div')[0];
+			aa.style.zoom = (192000 / 1920) + '%';
+			observer.disconnect();
+		});
+		observer.observe(elementToObserve, { subtree: true, childList: true })
+
+		var dataCaspar = {};
+
+		function escapeHtml(unsafe) {
+			return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+		}
+
+		// Parse templateData into an XML object
+		function parseCaspar(str) {
+			var xmlDoc;
+			if (window.DOMParser) {
+				parser = new DOMParser();
+				xmlDoc = parser.parseFromString(str, "text/xml");
+			}
+			dataCaspar = XML2JSON(xmlDoc.documentElement.childNodes);
+		}
+
+
+		// Make the XML templateData message into a more simple key:value object
+		function XML2JSON(node) {
+			var data = {}; // resulting object
+			for (k = 0; k < node.length; k++) {
+				var idCaspar = node[k].getAttribute("id");
+				var valCaspar = node[k].childNodes[0].getAttribute("value");
+				if (idCaspar != undefined && valCaspar != undefined) {
+					data[idCaspar] = valCaspar;
+				};
+			}
+			return data;
+		}
+
+		// Main function to insert data
+		function dataInsert(dataCaspar) {
+			for (var idCaspar in dataCaspar) {
+				var idTemplate = document.getElementById(idCaspar);
+				if (idTemplate != undefined) {
+					var idtext = idTemplate.getElementsByTagName('text')[0];
+					var idimage = idTemplate.getElementsByTagName('image')[0];
+					if (idtext != undefined) {
+						idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = escapeHtml(dataCaspar[idCaspar]);
+						idTemplate.style.display = "block";
+						if (idTemplate.getElementsByTagName('extraproperty')[0] != undefined) {
+							var textalign1 = idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('textalign');
+							var width1 = idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('width');
+							var originalFontSize = idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('originalfontsize');
+							if (textalign1 == 'center') {
+								idTemplate.getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+								idTemplate.getElementsByTagName('text')[0].style.whiteSpace = "normal";
+								idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', '0');
+								idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'middle');
+							}
+							if (textalign1 == 'right') {
+								idTemplate.getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+								idTemplate.getElementsByTagName('text')[0].style.whiteSpace = 'normal';
+								idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', width1 / 2);
+								idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'end');
+							}
+							idTemplate.getElementsByTagName('text')[0].setAttribute('font-size', originalFontSize);
+							do {
+								var dd = idTemplate.getElementsByTagName('text')[0].getAttribute('font-size');
+								idTemplate.getElementsByTagName('text')[0].setAttribute('font-size', dd - 1);
+								var width2 = idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].getBBox().width;
+							} while (width2 > width1);
+						}
+
+					}
+					else if (idimage != undefined) {
+						idTemplate.getElementsByTagName('image')[0].setAttribute('xlink:href', escapeHtml(dataCaspar[idCaspar]));
+						idTemplate.getElementsByTagName('image')[0].setAttribute('preserveAspectRatio', 'none');
+						idTemplate.style.display = "block";
+					}
+				}
+			}
+		}
+
+		// Call for a update of data from CasparCG client
+		function update(str) {
+			parseCaspar(str); // Parse templateData into an XML object
+			dataInsert(dataCaspar); // Insert data
+		}
+
+		// insert data from CasparCg client when activated
+		function play(str) {
+			parseCaspar(str); // Parse templateData into an XML object
+			dataInsert(dataCaspar); // Insert data
+			// gwd.actions.timeline.gotoAndPlay('document.body', 'start');
+		}
+		function stop() {
+			outAnimation();
+
+			// document.body.innerHTML = '' ;
+		}
+		function updatestring(str1, str2) {
+			document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = str2;
+			document.getElementById(str1).style.display = "block";
+			if (document.getElementById(str1).getElementsByTagName('extraproperty')[0] != undefined) {
+				var textalign1 = document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('textalign');
+				var width1 = document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('width');
+				var originalFontSize = document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('originalfontsize');
+				if (textalign1 == 'center') {
+					document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+					document.getElementById(str1).getElementsByTagName('text')[0].style.whiteSpace = "normal";
+					document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', '0');
+					document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'middle');
+				}
+				if (textalign1 == 'right') {
+					document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+					document.getElementById(str1).getElementsByTagName('text')[0].style.whiteSpace = 'normal';
+					document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', width1 / 2);
+					document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'end');
+				}
+				document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('font-size', originalFontSize);
+				do {
+					var dd = document.getElementById(str1).getElementsByTagName('text')[0].getAttribute('font-size');
+					document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('font-size', dd - 1);
+					var width2 = document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].getBBox().width;
+				} while (width2 > width1);
+			}
+		}
+		function updateimage(str1, str2) {
+			document.getElementById(str1).getElementsByTagName('image')[0].setAttribute('xlink:href', str2);
+			document.getElementById(str1).getElementsByTagName('image')[0].setAttribute('preserveAspectRatio', 'none');
+			document.getElementById(str1).style.display = "block";
+		}
+
+	</script>
+	<div>
+		<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+		<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1920"
+			height="1080" viewBox="0 0 1920 1080" xml:space="preserve">
+			<desc>Created with Fabric.js 5.3.0</desc>
+			<defs>
+			</defs>
+			<g transform="matrix(1.98 0 0 1.98 768.39 521.25)" id="id_311">
+				<filter id="SVGID_399" y="-26%" height="152%" x="-25%" width="150%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_399);"
+					class="class_311" x="-300" y="-250" rx="0" ry="0" width="600" height="500" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 769.38 874.18)" id="id_312">
+				<filter id="SVGID_400" y="-565%" height="1230%" x="-27%" width="154%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<path
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_400);"
+					transform=" translate(-225.5, -3.25)" class="class_312" d="M 0.5 6 L 0.5 0.5 L 450.5 0.5 L 450.5 6"
+					stroke-linecap="round" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 420.34 873.69)" id="id_313">
+				<filter id="SVGID_401" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_401);"
+					class="class_313" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 420.35 893.43)" style="filter: url(#SVGID_402);" id="ccg_316">
+				<filter id="SVGID_402" y="-285%" height="670%" x="-160%" width="420%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-10.75" y="3.14">2011</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 559.56 873.69)" id="id_316">
+				<filter id="SVGID_403" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_403);"
+					class="class_316" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 559.57 893.43)" style="filter: url(#SVGID_404);" id="ccg_319">
+				<filter id="SVGID_404" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2012</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 698.78 873.69)" id="id_319">
+				<filter id="SVGID_405" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_405);"
+					class="class_319" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 698.78 893.43)" style="filter: url(#SVGID_406);" id="ccg_322">
+				<filter id="SVGID_406" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2013</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 838 873.69)" id="id_322">
+				<filter id="SVGID_407" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_407);"
+					class="class_322" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 837.99 893.43)" style="filter: url(#SVGID_408);" id="ccg_325">
+				<filter id="SVGID_408" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2014</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 977.22 873.69)" id="id_325">
+				<filter id="SVGID_409" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_409);"
+					class="class_325" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 977.23 893.43)" style="filter: url(#SVGID_410);" id="ccg_328">
+				<filter id="SVGID_410" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2015</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1116.44 873.69)" id="id_328">
+				<filter id="SVGID_411" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_411);"
+					class="class_328" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1116.44 893.43)" style="filter: url(#SVGID_412);" id="ccg_331">
+				<filter id="SVGID_412" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2016</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 420.34 667.85)" id="id_331">
+				<filter id="SVGID_413" y="-35%" height="170%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_413);"
+					class="class_331" x="-21.09375" y="-100.96153846153845" rx="0" ry="0" width="42.1875"
+					height="201.9230769230769" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 559.56 658.96)" id="id_332">
+				<filter id="SVGID_414" y="-34%" height="168%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_414);"
+					class="class_332" x="-21.09375" y="-105.44871794871794" rx="0" ry="0" width="42.1875"
+					height="210.89743589743588" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 698.78 636.75)" id="id_333">
+				<filter id="SVGID_415" y="-33%" height="166%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_415);"
+					class="class_333" x="-21.09375" y="-116.66666666666666" rx="0" ry="0" width="42.1875"
+					height="233.33333333333331" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 838 556.79)" id="id_334">
+				<filter id="SVGID_416" y="-30%" height="160%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_416);"
+					class="class_334" x="-21.09375" y="-157.05128205128204" rx="0" ry="0" width="42.1875"
+					height="314.1025641025641" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 977.22 534.58)" id="id_335">
+				<filter id="SVGID_417" y="-29%" height="158%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_417);"
+					class="class_335" x="-21.09375" y="-168.26923076923077" rx="0" ry="0" width="42.1875"
+					height="336.53846153846155" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1116.44 521.25)" id="id_336">
+				<filter id="SVGID_418" y="-29%" height="158%" x="-91%" width="282%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<rect
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,0,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_418);"
+					class="class_336" x="-21.09375" y="-175" rx="0" ry="0" width="42.1875" height="350" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 418.19 448.11)" style="filter: url(#SVGID_419);" id="ccg_339">
+				<filter id="SVGID_419" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">45</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 557.4 430.35)" style="filter: url(#SVGID_420);" id="ccg_341">
+				<filter id="SVGID_420" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">47</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 696.62 385.92)" style="filter: url(#SVGID_421);" id="ccg_343">
+				<filter id="SVGID_421" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">52</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 835.83 226.01)" style="filter: url(#SVGID_422);" id="ccg_345">
+				<filter id="SVGID_422" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">70</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 975.06 181.58)" style="filter: url(#SVGID_423);" id="ccg_347">
+				<filter id="SVGID_423" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">75</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1114.28 154.93)" style="filter: url(#SVGID_424);" id="ccg_349">
+				<filter id="SVGID_424" y="-186%" height="472%" x="-208%" width="516%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-8" y="5.03">78</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 769.38 874.18)" id="id_349">
+				<filter id="SVGID_425" y="-565%" height="1230%" x="-27%" width="154%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<path
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_425);"
+					transform=" translate(-225.5, -3.25)" class="class_349" d="M 0.5 6 L 0.5 0.5 L 450.5 0.5 L 450.5 6"
+					stroke-linecap="round" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 420.34 873.69)" id="id_350">
+				<filter id="SVGID_426" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_426);"
+					class="class_350" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 420.35 893.43)" style="filter: url(#SVGID_427);" id="ccg_353">
+				<filter id="SVGID_427" y="-285%" height="670%" x="-160%" width="420%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-10.75" y="3.14">2011</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 559.56 873.69)" id="id_353">
+				<filter id="SVGID_428" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_428);"
+					class="class_353" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 559.57 893.43)" style="filter: url(#SVGID_429);" id="ccg_356">
+				<filter id="SVGID_429" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2012</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 698.78 873.69)" id="id_356">
+				<filter id="SVGID_430" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_430);"
+					class="class_356" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 698.78 893.43)" style="filter: url(#SVGID_431);" id="ccg_359">
+				<filter id="SVGID_431" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2013</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 838 873.69)" id="id_359">
+				<filter id="SVGID_432" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_432);"
+					class="class_359" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 837.99 893.43)" style="filter: url(#SVGID_433);" id="ccg_362">
+				<filter id="SVGID_433" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2014</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 977.22 873.69)" id="id_362">
+				<filter id="SVGID_434" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_434);"
+					class="class_362" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 977.23 893.43)" style="filter: url(#SVGID_435);" id="ccg_365">
+				<filter id="SVGID_435" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2015</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1116.44 873.69)" id="id_365">
+				<filter id="SVGID_436" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_436);"
+					class="class_365" x1="0" y1="-3" x2="0" y2="3" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1116.44 893.43)" style="filter: url(#SVGID_437);" id="ccg_368">
+				<filter id="SVGID_437" y="-285%" height="670%" x="-155%" width="410%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-11.12" y="3.14">2016</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 1029.38 955.58)" style="filter: url(#SVGID_438);" id="ccg_370">
+				<filter id="SVGID_438" y="-167%" height="434%" x="-102%" width="304%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="18" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-18.18" y="5.65">Year</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 317.44 522.24)" id="id_370">
+				<filter id="SVGID_439" y="-29%" height="158%" x="-482%" width="1064%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<path
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_439);"
+					transform=" translate(2.75, -175.5)" class="class_370" d="M -6 350.5 L 0.5 350.5 L 0.5 0.5 L -6 0.5"
+					stroke-linecap="round" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 868.74)" id="id_371">
+				<filter id="SVGID_440" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_440);"
+					class="class_371" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 299.57 868.88)" style="filter: url(#SVGID_441);" id="ccg_374">
+				<filter id="SVGID_441" y="-285%" height="670%" x="-559%" width="1218%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-2.78" y="3.14">0</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 779.89)" id="id_374">
+				<filter id="SVGID_442" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_442);"
+					class="class_374" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 780.04)" style="filter: url(#SVGID_443);" id="ccg_377">
+				<filter id="SVGID_443" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">10</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 691.05)" id="id_377">
+				<filter id="SVGID_444" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_444);"
+					class="class_377" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 691.17)" style="filter: url(#SVGID_445);" id="ccg_380">
+				<filter id="SVGID_445" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">20</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 602.2)" id="id_380">
+				<filter id="SVGID_446" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_446);"
+					class="class_380" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 602.33)" style="filter: url(#SVGID_447);" id="ccg_383">
+				<filter id="SVGID_447" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">30</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 513.36)" id="id_383">
+				<filter id="SVGID_448" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_448);"
+					class="class_383" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 513.49)" style="filter: url(#SVGID_449);" id="ccg_386">
+				<filter id="SVGID_449" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">40</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 424.51)" id="id_386">
+				<filter id="SVGID_450" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_450);"
+					class="class_386" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 424.65)" style="filter: url(#SVGID_451);" id="ccg_389">
+				<filter id="SVGID_451" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">50</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 335.66)" id="id_389">
+				<filter id="SVGID_452" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_452);"
+					class="class_389" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 335.8)" style="filter: url(#SVGID_453);" id="ccg_392">
+				<filter id="SVGID_453" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">60</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 316.95 246.82)" id="id_392">
+				<filter id="SVGID_454" y="-40%" height="180%" x="-40%" width="180%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<line
+					style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;filter: url(#SVGID_454);"
+					class="class_392" x1="3" y1="0" x2="-3" y2="0" />
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 294.06 246.94)" style="filter: url(#SVGID_455);" id="ccg_395">
+				<filter id="SVGID_455" y="-285%" height="670%" x="-290%" width="680%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="10" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-5.56" y="3.14">70</tspan>
+				</text>
+			</g>
+			<g transform="matrix(0.03 -1.98 1.98 0.03 221.52 259.83)" style="filter: url(#SVGID_456);" id="ccg_397">
+				<filter id="SVGID_456" y="-167%" height="434%" x="-54%" width="208%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="sans-serif" font-size="18" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-43.86" y="5.65">Values in $</tspan>
+				</text>
+			</g>
+			<g transform="matrix(1.98 0 0 1.98 699.08 110.36)" style="filter: url(#SVGID_457);" id="ccg_399">
+				<filter id="SVGID_457" y="-131%" height="362%" x="-33%" width="166%">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+					<feOffset dx="0" dy="0" result="oBlur"></feOffset>
+					<feFlood flood-color="rgb(0,0,0)" flood-opacity="1" />
+					<feComposite in2="oBlur" operator="in" />
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<text xml:space="preserve" font-family="Times New Roman" font-size="24" font-style="normal"
+					font-weight="normal"
+					style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;">
+					<tspan x="-115" y="7.54">XYZ Foods Stock Price</tspan>
+				</text>
+			</g>
+		</svg>
+	</div>
+</body>
+<script src="main.js"></script>
+<script src="main2.js"></script>
+
+</html>

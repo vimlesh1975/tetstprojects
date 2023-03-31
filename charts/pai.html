@@ -1,0 +1,356 @@
+<!DOCTYPE html >
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Document</title>
+                            <link rel="stylesheet" href="main.css">
+                                <link rel="stylesheet" href="main2.css">
+                                </head>
+                                <body>
+                                    <script>
+                                        document.body.addEventListener('keypress', function(e) {
+                if(e.key.toUpperCase() === "S") {stop(); }
+              });
+                                        if (screen.colorDepth === 0) {
+                var css = '[id^=ccg] {display: none; }',
+                                        head = document.head || document.getElementsByTagName('head')[0],
+                                        style = document.createElement('style');
+                                        head.appendChild(style);
+                                        style.type = 'text/css';
+                                        if (style.styleSheet) {
+                                            // This is required for IE8 and below.
+                                            style.styleSheet.cssText = css;
+                } else {
+                                            style.appendChild(document.createTextNode(css));
+                }
+            }
+
+                                        const elementToObserve = document.body;
+            const observer = new MutationObserver(() => {
+                                            document.body.style.margin = '0';
+                                        document.body.style.padding = '0';
+                                        document.body.style.overflow = 'hidden';
+                                        var aa = document.getElementsByTagName('div')[0];
+                                        aa.style.zoom=(192000/1920)+'%';
+                                        observer.disconnect();
+            });
+                                        observer.observe(elementToObserve, {subtree: true, childList: true })
+
+                                        var dataCaspar = { };
+
+                                        function escapeHtml(unsafe) {
+            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+                                    // Parse templateData into an XML object
+                                    function parseCaspar(str) {
+            var xmlDoc;
+                                    if (window.DOMParser) {
+                                        parser = new DOMParser();
+                                    xmlDoc = parser.parseFromString(str, "text/xml");
+            }
+                                    dataCaspar = XML2JSON(xmlDoc.documentElement.childNodes);
+            }
+
+
+                                    // Make the XML templateData message into a more simple key:value object
+                                    function XML2JSON(node) {
+            var data = { }; // resulting object
+                                    for (k = 0; k < node.length; k++) {
+            var idCaspar = node[k].getAttribute("id");
+                                    var valCaspar = node[k].childNodes[0].getAttribute("value");
+                                    if (idCaspar != undefined && valCaspar != undefined) {
+                                        data[idCaspar] = valCaspar;
+            };
+            }
+                                    return data;
+            }
+
+                                    // Main function to insert data
+                                    function dataInsert(dataCaspar) {
+            for (var idCaspar in dataCaspar) {
+            var idTemplate = document.getElementById(idCaspar);
+                                    if (idTemplate != undefined) {
+            var idtext = idTemplate.getElementsByTagName('text')[0];
+                                    var idimage = idTemplate.getElementsByTagName('image')[0];
+                                    if (idtext != undefined) {
+                                        idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = escapeHtml(dataCaspar[idCaspar]);
+                                    idTemplate.style.display = "block";
+                                    if (idTemplate.getElementsByTagName('extraproperty')[0] != undefined) {
+                    var textalign1 = idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('textalign');
+                                    var width1 = idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('width');
+                                    var originalFontSize =  idTemplate.getElementsByTagName('extraproperty')[0].getAttribute('originalfontsize');
+                                    if (textalign1 == 'center') {
+                                        idTemplate.getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+                                    idTemplate.getElementsByTagName('text')[0].style.whiteSpace = "normal";
+                                    idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', '0');
+                                    idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'middle');
+                    }
+                                    if (textalign1 == 'right') {
+                                        idTemplate.getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+                                    idTemplate.getElementsByTagName('text')[0].style.whiteSpace = 'normal';
+                                    idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', width1 / 2);
+                                    idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'end');
+                    }
+                                    idTemplate.getElementsByTagName('text')[0].setAttribute('font-size', originalFontSize);
+                                    do {
+                        var dd = idTemplate.getElementsByTagName('text')[0].getAttribute('font-size');
+                                    idTemplate.getElementsByTagName('text')[0].setAttribute('font-size', dd - 1);
+                                    var width2 = idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].getBBox().width;
+                    } while (width2 > width1);
+                }
+
+            }
+                                    else if (idimage != undefined) {
+                                        idTemplate.getElementsByTagName('image')[0].setAttribute('xlink:href', escapeHtml(dataCaspar[idCaspar]));
+                                    idTemplate.getElementsByTagName('image')[0].setAttribute('preserveAspectRatio', 'none');
+                                    idTemplate.style.display = "block";
+            }
+            }
+            }
+            }
+
+                                    // Call for a update of data from CasparCG client
+                                    function update(str) {
+                                        parseCaspar(str); // Parse templateData into an XML object
+                                    dataInsert(dataCaspar); // Insert data
+            }
+
+                                    // insert data from CasparCg client when activated
+                                    function play(str) {
+                                        parseCaspar(str); // Parse templateData into an XML object
+                                    dataInsert(dataCaspar); // Insert data
+            // gwd.actions.timeline.gotoAndPlay('document.body', 'start');
+            }
+                                    function stop() {
+                                        document.body.innerHTML = '' ;
+            }
+                                    function updatestring(str1, str2) {
+                                        document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = str2;
+                                    document.getElementById(str1).style.display = "block";
+                                    if (document.getElementById(str1).getElementsByTagName('extraproperty')[0] != undefined) {
+                    var textalign1 = document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('textalign');
+                                    var width1 = document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('width');
+                                    var originalFontSize =  document.getElementById(str1).getElementsByTagName('extraproperty')[0].getAttribute('originalfontsize');
+                                    if (textalign1 == 'center') {
+                                        document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+                                    document.getElementById(str1).getElementsByTagName('text')[0].style.whiteSpace = "normal";
+                                    document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', '0');
+                                    document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'middle');
+                    }
+                                    if (textalign1 == 'right') {
+                                        document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('xml:space', 'preserve1');
+                                    document.getElementById(str1).getElementsByTagName('text')[0].style.whiteSpace = 'normal';
+                                    document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('x', width1 / 2);
+                                    document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].setAttribute('text-anchor', 'end');
+                    }
+                                    document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('font-size', originalFontSize);
+                                    do {
+                        var dd = document.getElementById(str1).getElementsByTagName('text')[0].getAttribute('font-size');
+                                    document.getElementById(str1).getElementsByTagName('text')[0].setAttribute('font-size', dd - 1);
+                                    var width2 = document.getElementById(str1).getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].getBBox().width;
+                    } while (width2 > width1);
+                }
+            }
+                                    function updateimage(str1, str2) {
+                                        document.getElementById(str1).getElementsByTagName('image')[0].setAttribute('xlink:href', str2);
+                                    document.getElementById(str1).getElementsByTagName('image')[0].setAttribute('preserveAspectRatio', 'none');
+                                    document.getElementById(str1).style.display = "block";
+            }
+
+                                </script>
+                                <div> <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1920" height="1080" viewBox="0 0 1920 1080" xml:space="preserve">
+<desc>Created with Fabric.js 5.3.0</desc>
+<defs>
+</defs>
+<g transform="matrix(2.25 0 0 2.25 862.52 553.13)" id="id_462"  >
+<filter id="SVGID_483" y="-27%" height="154%" x="-26%" width="152%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_483);"  class="class_462" x="-250" y="-200" rx="0" ry="0" width="500" height="400" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 712.62 346.88)" id="id_463"  >
+<filter id="SVGID_484" y="-38%" height="176%" x="-46%" width="192%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(77,175,74); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_484);"  transform=" translate(57.46, 82.5)" class="class_463" d="M -114.91179696269138 -118.40725872515245 C -84.12243923785789 -148.28769394154662 -42.90483606575012 -165 1.4210854715202004e-14 -165 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 748.08 299.74)" style="filter: url(#SVGID_485);" id="ccg_466"  >
+<filter id="SVGID_485" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-25.7" y="5.03" >2011 45</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 631.89 409.47)" id="id_466"  >
+<filter id="SVGID_486" y="-45%" height="190%" x="-38%" width="176%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(55,126,184); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_486);"  transform=" translate(82.5, 58.85)" class="class_466" d="M -164.99848866440456 0.7062141759869762 C -165.19050625717017 -44.156397876548574 -147.10638829131307 -87.16307334426472 -114.91179696269141 -118.40725872515243 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 616.01 464.12)" style="filter: url(#SVGID_487);" id="ccg_469"  >
+<filter id="SVGID_487" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-26" y="5.03" >2012 47</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 635.64 718.53)" id="id_469"  >
+<filter id="SVGID_488" y="-43%" height="186%" x="-38%" width="176%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,127,0); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_488);"  transform=" translate(82.5, -64.34)" class="class_469" d="M -103.2697231840154 128.68707889099366 C -142.10137392009005 97.52517936812359 -164.78538675500448 50.49492442578301 -164.9984886644046 0.7062141759869434 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 647.44 673.82)" style="filter: url(#SVGID_489);" id="ccg_472"  >
+<filter id="SVGID_489" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-26" y="5.03" >2013 52</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 838.92 773.76)" id="id_472"  >
+<filter id="SVGID_490" y="-38%" height="176%" x="-36%" width="172%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(152,78,163); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_490);"  transform=" translate(10.49, -82.5)" class="class_472" d="M 82.29604901120457 143.01174887800445 C 23.393205413326548 176.90736473936562 -50.26684097012047 171.22120913432903 -103.2697231840154 128.68707889099363 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 837.64 794.71)" style="filter: url(#SVGID_491);" id="ccg_475"  >
+<filter id="SVGID_491" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-26" y="5.03" >2014 70</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 1086.91 685.1)" id="id_475"  >
+<filter id="SVGID_492" y="-37%" height="174%" x="-38%" width="176%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(228,26,28); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_492);"  transform=" translate(-82.51, -52.26)" class="class_475" d="M 160.44927633803664 -38.48414897851267 C 177.5109845151168 32.65004010364064 145.69941871057762 106.52630721889858 82.29604901120462 143.01174887800443 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 1070.61 626.36)" style="filter: url(#SVGID_493);" id="ccg_478"  >
+<filter id="SVGID_493" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-26" y="5.03" >2015 75</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 1063.03 347.5)" id="id_478"  >
+<filter id="SVGID_494" y="-38%" height="176%" x="-39%" width="178%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(29,175,74); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_494);"  transform=" translate(-80.22, 82.5)" class="class_478" d="M 1.0103336092965664e-14 -165 C 76.30253624611994 -165 142.652681354194 -112.6822503327354 160.44927633803667 -38.48414897851265 L 0 0 Z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.25 0 0 2.25 1017.22 355.84)" style="filter: url(#SVGID_495);" id="ccg_481"  >
+<filter id="SVGID_495" y="-186%" height="472%" x="-78%" width="256%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="16" font-style="normal" font-weight="normal" style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-26" y="5.03" >2016 78</tspan></text>
+</g>
+<g transform="matrix(2.25 0 0 2.25 862.04 130.5)" style="filter: url(#SVGID_496);" id="ccg_483"  >
+<filter id="SVGID_496" y="-126%" height="352%" x="-33%" width="166%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="15"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+		<text xml:space="preserve" font-family="Times New Roman" font-size="25" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-119.79" y="7.85" >XYZ Foods Stock Price</tspan></text>
+</g>
+</svg>  </div>
+                            </body>
+                            <script src="main.js"></script>
+                            <script src="main2.js"></script>
+                        </html>
