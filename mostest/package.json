@@ -1,0 +1,16 @@
+{
+  "name": "mostest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mos-connection/connector": "^3.0.2",
+    "nodemon": "^2.0.22"
+  }
+}
