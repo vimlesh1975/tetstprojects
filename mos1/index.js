@@ -49,4 +49,4 @@ const mosObjID = 'my-mos-object'
 
 console.log(mosClient.getDevices().length)
 
-console.log(mosClient.)
+console.log(mosClient)
