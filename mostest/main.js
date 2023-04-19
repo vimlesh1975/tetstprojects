@@ -15,19 +15,22 @@ const mosClient2 = new MosConnection({
   ports: { lower: 11000, query: 12000, upper: 13000 }
 })
 
-mosClient2.on('message', (msg) => {
-  console.log(msg)
-})
 
 mosClient2.onConnection((mosdevice) => {
   console.log('MOS client 2 connected')
   mosdevice.onConnectionChange(() => {
-    console.log('MOS device 2 connected')
+    console.log('MOS device 2 connected', mosdevice)
     mosdevice.onRequestMachineInfo(message => {
-      // console.log(`Received MOS message: ${message.toXMLString()}`)
+      console.log(`Received MOS message: ${message.toXMLString()}`)
     })
+
+
   })
 })
 
+
+
 mosClient2.init()
-mosClient2.connect({ primary: { id: 'mosID', host: '127.0.0.1' } })
+// mosClient2.connect({ primary: { id: 'mosID', host: '127.0.0.1' ,  ports: { lower: 11000, query: 12000, upper: 13000 }} })
+mosClient2.connect({ primary: { id: 'mosID', host: '127.0.0.1' }})
+
