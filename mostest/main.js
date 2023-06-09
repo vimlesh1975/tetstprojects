@@ -17,7 +17,7 @@ const mos = new MosConnection(
       query: 11542,
     },
 		openRelay: true,
-		debug: false,
+		debug: true,
 	})
 )
 // mos.on('rawMessage', (_source, _type, _message) => {
@@ -136,7 +136,7 @@ mos.init()
 	.then(async (_listening) => {
 		return mos.connect({
 			primary: {
-				id: 'sofie.server.tv.automation',
+				id: 'mosID_RCC',
 				host: '127.0.0.1',
 				timeout: 100000,
 				// To connect to a server on custom ports:
