@@ -80,10 +80,10 @@
                     if (idtext != undefined) {
                         idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = escapeHtml(dataCaspar[idCaspar]);
                         
-                        const aa = document.getElementsByClassName('fname')[0].getElementsByTagName('tspan')[0]
-                        const firstName = aa.textContent.split(' ')[0];
-                        const lastName = aa.textContent.split(' ')[1];
-                        aa.innerHTML = (`<tspan style="font-family: Impact;">${firstName}</tspan> <tspan style="font-family: cursive;">${lastName}</tspan>`)
+                        // const aa = document.getElementsByClassName('fname')[0].getElementsByTagName('tspan')[0]
+                        // const firstName = aa.textContent.split(' ')[0];
+                        // const lastName = aa.textContent.split(' ')[1];
+                        // aa.innerHTML = (`<tspan style="font-family: Impact;">${firstName}</tspan> <tspan style="font-family: cursive;">${lastName}</tspan>`)
 
                         idTemplate.style.display = "block";
                         if (idTemplate.getElementsByTagName('extraproperty')[0] != undefined) {
