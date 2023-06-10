@@ -6,7 +6,7 @@ const applyDifferentfont=()=>{
     aa.innerHTML=(`<tspan style="font-family: Impact;">${firstName}</tspan> <tspan style="font-family: cursive;">${lastName}</tspan>`)
 }
 
-// applyDifferentfont();
+applyDifferentfont();
 
 var old_dataInsert = dataInsert;
 dataInsert = function () {
