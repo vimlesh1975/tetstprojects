@@ -67,7 +67,7 @@ const bn = () => {
     setInterval(() => {
         var myGroup = document.getElementById('bn');
         var timeline = gsap.timeline({ repeat: 0, repeatDelay: 3 });
-        timeline.from(myGroup, { scaleX: 0, duration: 1 });
+        timeline.from(myGroup, { scaleX: 0, duration: 0.5 });
         updatestring('bn', aa[i].toString())
         i += 1;
         if (i > aa.length - 1) {
@@ -96,12 +96,12 @@ const locationband = () => {
 }
 
 const profile = () => {
-   
+
     const data1 = [
         {
             name: 'Isabella Grace Stone',
             age: 25,
-            email: 'isabella.stone@example.com',
+            email: 'isabella.stone@example.com isabella.stone@example.com',
             image: 'https://randomuser.me/api/portraits/women/1.jpg',
         },
         {
@@ -160,11 +160,11 @@ const profile = () => {
         },
     ];
     var dataIndex = 0
-    var elements = document.querySelectorAll('#name, #image, #age, #email, #profile_strip');
-    Array.from(elements).forEach((element)=>{
-        element.setAttribute('visibility', 'visible');
-    })
-    // console.log(elements)
+    // var elements = document.querySelectorAll('#name, #image, #age, #email, #profile_strip');
+    var elements = document.querySelectorAll('#name text, #image image, #age text, #email text, #profile_strip rect');
+
+
+
     setTimeout(() => {
         // timeout is nessaesaary to set all variable set by client.
         const sortedElements = Array.from(elements).sort(function (a, b) {
@@ -177,16 +177,12 @@ const profile = () => {
                     var idtext = idTemplate.getElementsByTagName('text')[0];
                     var idimage = idTemplate.getElementsByTagName('image')[0];
                     if (idtext != undefined) {
-                        idTemplate.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].innerHTML = data1[dataIndex][key];
-                        idTemplate.style.display = "block";
+                        updatestring(key, data1[dataIndex][key]);
                     }
                     else if (idimage != undefined) {
-                        idTemplate.getElementsByTagName('image')[0].setAttribute('xlink:href', data1[dataIndex][key]);
-                        idTemplate.getElementsByTagName('image')[0].setAttribute('preserveAspectRatio', 'none');
-                        idTemplate.style.display = "block";
+                        updateimage(key, data1[dataIndex][key]);
                     }
                 }
-          
             });
             dataIndex = dataIndex + 1;
             if (dataIndex > (data1.length - 1)) {
@@ -197,9 +193,8 @@ const profile = () => {
                 if (element.tagName === 'path') {
                     pathTransform = element.transform.animVal[0].matrix.e
                 }
-                // console.log(element.transform.animVal[0].matrix.e)
                 const scalefactor = element.parentNode.getCTM().a;
-                gsap.set(element, { x: -500 / scalefactor, opacity: 0 });
+                gsap.set(element, { x: -2100 / scalefactor, opacity: 0 });
                 gsap.to(element, {
                     x: (element.tagName === 'path') ? pathTransform : 0,
                     opacity: 1,
@@ -209,17 +204,89 @@ const profile = () => {
                 });
             });
 
-
+            Array.from(elements).forEach((element) => {
+                element.setAttribute('visibility', 'visible');
+            })
         }, 2000);
     }, 100);
 }
+const oneliner = () => {
+    document.getElementById('oneliner').setAttribute('visibility', 'visible');
+    document.getElementById('oneliner_strip').setAttribute('visibility', 'visible');
+    var data1 = [];
 
+    const fetchdata = () => {
+        fetch('aa.csv')
+            .then(response => response.text())
+            .then(csvData => {
+                // Process the CSV data
+                const rows = csvData.split('\n');
+                const headers = rows[0].split(',');
+
+                var data1 = [];
+
+                // Iterate over the rows
+                for (let i = 1; i < rows.length; i++) {
+                    const rowData = rows[i].split(',');
+
+                    // Process each row of data
+                    for (let j = 0; j < headers.length - 1; j++) {
+                        const header = headers[j];
+                        const value = rowData[j];
+                        // Do something with the header and value
+                        data1.push(value)
+                        // console.log(header, value)
+                    }
+                }
+
+
+                var timer1;
+                clearInterval(timer1);
+                var i = 0;
+                timer1 = setInterval(() => {
+                    updatestring('oneliner', data1[i]?.toString())
+                    const aa = document.getElementById('oneliner').getElementsByTagName('text')[0].getElementsByTagName('tspan')[0]
+                    const firstName = aa.textContent.split(' ')[0];
+                    const lastName = aa.textContent.split(' ')[1];
+                    aa.innerHTML = (`<tspan style="font-family: gigi;">${firstName}</tspan> <tspan style="font-family: cursive;">${lastName}</tspan>`)
+                    i += 1;
+                    if (i > data1.length - 1) {
+                        i = 0;
+                        clearInterval(timer1);
+                        fetchdata();
+                        // return
+                    }
+                    var myGroup = document.getElementById('oneliner');
+                    var timeline = gsap.timeline({ repeat: 0, repeatDelay: 3 });
+                    timeline.from(myGroup, { scaleX: 0, duration: 0.5 });
+                }, 2000);
+            }
+            )
+
+            .catch(error => {
+                // Handle any errors that occurred during the fetch
+                console.error('Error fetching the CSV file:', error);
+            });
+    }
+
+
+    fetchdata();
+
+
+
+    setTimeout(() => {
+        updatestring('oneliner', '.')
+    }, 100);
+
+
+}
 scriptgsap.onload = function () {
     datetime();
     scrollbyGsap();
     bn();
     logo();
     locationband();
-    // profile();
+    profile();
+    oneliner()
 }
 document.body.appendChild(scriptgsap);

@@ -10,7 +10,8 @@ const scriptgsap = document.createElement("script");
 scriptgsap.src = "./js/gsap.min.js";
 scriptgsap.setAttribute("type", "text/javascript");
 var outAnimation;
-var elements = document.querySelectorAll('rect, image, text, path, circle');
+    var elements = document.querySelectorAll('#name text, #image image, #age text, #email text, #profile_strip rect');
+    // var elements = document.querySelectorAll('rect, image, text, path, circle');
 
 const data1 =  [
     {
