@@ -272,8 +272,6 @@ const oneliner = () => {
 
     fetchdata();
 
-
-
     setTimeout(() => {
         updatestring('oneliner', '.')
     }, 100);
@@ -281,9 +279,9 @@ const oneliner = () => {
 
 }
 scriptgsap.onload = function () {
-    datetime();
     scrollbyGsap();
-    bn();
+    datetime();
+    // bn();
     logo();
     locationband();
     profile();
