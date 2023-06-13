@@ -281,7 +281,7 @@ const oneliner = () => {
 scriptgsap.onload = function () {
     scrollbyGsap();
     datetime();
-    // bn();
+    bn();
     logo();
     locationband();
     profile();
