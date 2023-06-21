@@ -18,7 +18,6 @@ var data1 = [
 
 ]
 
-
 const dynamicscroll = () => {
     var originalGroup = document.getElementById('scroll');
     originalGroup.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].textContent = data1[0]
@@ -26,7 +25,7 @@ const dynamicscroll = () => {
     newGroup.appendChild(originalGroup);
     document.getElementsByTagName('svg')[0].appendChild(newGroup);
     const dataElements = [];
-    dataElements.push(originalGroup)
+    dataElements.push(originalGroup) // Make a deep copy
 
     for (let i = 0; i < data1.length - 1; i++) {
         const clonedGroup = originalGroup.cloneNode(true);
@@ -40,12 +39,11 @@ const dynamicscroll = () => {
 
         originalGroup = document.getElementById('scroll' + i);
     }
-    console.log(dataElements)
-    var targetX = -newGroup.getBBox().width - 100;
+    var targetX = -newGroup.getBBox().width - 10;
 
-    var timeline = gsap.timeline({ repeat: 0 });
+    var timeline = gsap.timeline({ repeat: -1 });
 
-    const speed = 1000;
+    const speed = 300;
 
     timeline.fromTo(newGroup, { x: 1920 }, { x: targetX, duration: (-targetX + 1920) / speed, ease: 'linear' });
 
@@ -53,40 +51,33 @@ const dynamicscroll = () => {
     for (let i = children.length - 1; i > 0; i--) {
         newGroup.removeChild(children[i]);
     }
-    var i=1
+    var i = 1
     timeline.eventCallback("onUpdate", function () {
-        // Code executed on each update of the timeline
-        // Access and modify the timeline here
-        // Loop through the children starting from the last one and remove them
-      
         const tail = newGroup.transform.baseVal[0].matrix.e + newGroup.getBBox().width;
-        // console.log(tail);
-
-        if (tail<200){
-            if (i<dataElements.length){
-                newGroup.appendChild(dataElements[i])
-            i +=1;
-          
+        if (tail < 1920) {
+            if (i < dataElements.length) {
+                newGroup.appendChild(dataElements[i]);
+                if (i > 4) {
+                    newGroup.getElementsByTagName('g')[i - 5].getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].textContent = ' ';
+                }
+                i += 1;
             }
-          
-            else if (tail<100){
+            else if (tail < 0) {
                 timeline.pause()
                 newGroup.innerHTML = '';
+
+                for (let i = 0; i < dataElements.length; i++) {
+                    dataElements[i].getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].textContent = data1[i];
+                }
                 newGroup.appendChild(dataElements[0])
-                timeline.to(newGroup,{x:1920})
-
-                i=1
-                // setTimeout(() => {
-                //      timeline.play()
-                // }, 1000);
-               
-
+                i = 1
+                setTimeout(() => {
+                    timeline.play()
+                }, 100);
             }
         }
-
     });
 }
-
 
 
 
@@ -114,7 +105,7 @@ const scrollbyGsapwithmanytexts = () => {
     var targetX = -newGroup.getBBox().width - 100;
     var timeline = gsap.timeline({ repeat: -1 });
 
-    const speed = 1000;
+    const speed = 300;
     if (lefttoright) {
         timeline.fromTo(newGroup, { x: targetX }, { x: 1920, duration: (-targetX + 1920) / speed, ease: 'linear' });
     }
@@ -127,7 +118,7 @@ const scrollbyGsapwithsingletext = () => {
     const lefttoright = false;
     // const lefttoright=true;
     var originalGroup = document.getElementById('scroll');
-    originalGroup.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].textContent = data1.join(" 💕 ");
+    originalGroup.getElementsByTagName('text')[0].getElementsByTagName('tspan')[0].textContent = data1.join("  ");
     const newGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
     newGroup.appendChild(originalGroup);
     document.getElementsByTagName('svg')[0].appendChild(newGroup);
