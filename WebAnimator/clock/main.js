@@ -9,18 +9,25 @@ const getTime = () => {
   );
 };
 setTimeout(() => {
-  const aa = new Date();
   updatestring('ccg_1', getTime());
   setInterval(() => {
-    // const aa = new Date();
     updatestring('ccg_1', getTime());
   }, 1000);
-  const aa2 = canvas.getObjects();
-  const element = aa2.find((val) => val.id === 'ccg_1');
-  const id_2 = aa2.find((val) => val.id === 'id_2');
   setInterval(() => {
-    element.set({ fill: `hsl(${Math.random() * 255}, 100%, 80%)` });
-    id_2.set({ fill: `hsl(${Math.random() * 255}, 100%, 10%)` });
+    // changePropOfObject('ccg_1', 'fill', {
+    //   r: Math.random(),
+    //   g: Math.random(),
+    //   b: Math.random(),
+    //   a: 1,
+    // });
+    // changePropOfObject('ccg_1', 'left', 10);
+    canvas
+      .getObjects()
+      .find((item) => item.id === 'ccg_1')
+      .set({ fill: `hsl(${Math.random() * 255}, 100%, 80%)` });
     canvas.requestRenderAll();
   }, 1000);
-}, 1000);
+}, 100);
+
+// when using changePropOfObject for animated element sequence player stops.
+// We can use canvas methods also for changing props
